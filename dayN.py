@@ -12,6 +12,12 @@ INPUTFILE = 'input.txt'
 def sample_input():
     return ""
 
+examples = [('arg1', 'expected1'),
+            ('arg2', 'expected2')]
+
+examples2 = [('arg1', 'expected1'),
+             ('arg2', 'expected2')]
+
 # Utility functions
 
 def load_input(infile):
@@ -37,15 +43,25 @@ def solve(arg):
     """Solve the problem."""
     pass
 
+def solve2(arg):
+    """Solve the problem."""
+    pass
+
 # PART 1
 
 def example():
-    cases = [('arg1', 'expected1'),
-             ('arg2', 'expected2')]
-    for arg, expected in cases:
+    # single example
+    result = solve(get_sample_input())
+    expected = 'VALUE'
+    logger.info("got {} (expected {})".format(result, expected))
+    assert result == expected
+
+    # multiple examples
+    for arg, expected in examples:
         result = solve(arg)
         logger.info("'{}' -> {} (expected {})".format(arg, result, expected))
         assert result == expected
+
     logger.info('= ' * 32)
 
 def part1(lines):
