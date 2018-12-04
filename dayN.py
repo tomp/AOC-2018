@@ -4,38 +4,26 @@
 #
 import logging
 
+
 logging.basicConfig(format="%(asctime)s %(message)s", level=logging.INFO)
 logger = logging.getLogger()
 
 INPUTFILE = 'input.txt'
 
-def sample_input():
-    return ""
 
-examples = [('arg1', 'expected1'),
-            ('arg2', 'expected2')]
-
-examples2 = [('arg1', 'expected1'),
-             ('arg2', 'expected2')]
 
 # Utility functions
 
+def strip(line):
+    return line.strip()
+
 def load_input(infile):
-    lines = []
     with open(infile, 'r') as fp:
-        for line in fp:
-            line = line.strip()
-            if line:
-                lines.append(line)
-        return lines
+        return list(filter(bool, map(strip, fp)))
 
 def split_nonblank_lines(text):
-    lines = []
-    for line in text.splitlines():
-        line = line.strip()
-        if line:
-            lines.append(line)
-    return lines
+    return list(filter(bool, map(strip, text.splitlines())))
+
 
 # Solution
 
@@ -49,15 +37,31 @@ def solve2(arg):
 
 # PART 1
 
+def sample_input():
+    """Return the puzzle input and expected result for the part 1
+    example problem.
+    """
+    lines = []
+    expected = 'value'
+    return lines, expected
+
+def sample_cases():
+    """Return the example inputs and expected results for the part 1.
+    (Used if there are multiple example cases.)
+    """
+    return [('arg1', 'value1'),
+            ('arg2', 'value2')]
+
 def example():
     # single example
-    result = solve(get_sample_input())
-    expected = 'VALUE'
+    lines, expected = sample_input()
+    result = solve(lines)
     logger.info("got {} (expected {})".format(result, expected))
     assert result == expected
 
     # multiple examples
-    for arg, expected in examples:
+    cases = sample_cases()
+    for arg, expected in cases:
         result = solve(arg)
         logger.info("'{}' -> {} (expected {})".format(arg, result, expected))
         assert result == expected
@@ -72,6 +76,21 @@ def part1(lines):
 
 # PART 2
 
+def sample_input2():
+    """Return the puzzle input and expected result for the part 2
+    example problem.
+    """
+    lines = []
+    expected = "value2"
+    return lines, expected
+
+def sample_cases2():
+    """Return the example inputs and expected results for the part 2.
+    (Used if there are multiple example cases.)
+    """
+    return [('arg1', 'value1'),
+            ('arg2', 'value2')]
+
 def example2():
     logger.info('= ' * 32)
 
@@ -80,7 +99,8 @@ def part2(lines):
 
 if __name__ == '__main__':
     example()
-    # input = load_input(INPUTFILE)
-    # part1(input)
-    # example2()
-    # part2(input)
+    input = load_input(INPUTFILE)
+    part1(input)
+    example2()
+    part2(input)
+
