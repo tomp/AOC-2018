@@ -2,6 +2,10 @@
 #
 #  Advent of Code 2018 - Day N
 #
+import re
+from datetime import datetime, timedelta
+from collections import namedtuple, defaultdict
+from itertools import chain
 import logging
 
 
@@ -9,7 +13,6 @@ logging.basicConfig(format="%(asctime)s %(message)s", level=logging.INFO)
 logger = logging.getLogger()
 
 INPUTFILE = 'input.txt'
-
 
 
 # Utility functions
@@ -28,11 +31,11 @@ def split_nonblank_lines(text):
 # Solution
 
 def solve(arg):
-    """Solve the problem."""
+    """Solve the problem for Part 1."""
     pass
 
 def solve2(arg):
-    """Solve the problem."""
+    """Solve the problem for Part 2."""
     pass
 
 # PART 1
