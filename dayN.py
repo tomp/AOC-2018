@@ -3,6 +3,7 @@
 #  Advent of Code 2018 - Day N
 #
 import re
+import json
 from datetime import datetime, timedelta
 from collections import namedtuple, defaultdict
 from itertools import chain
@@ -30,11 +31,11 @@ def split_nonblank_lines(text):
 
 # Solution
 
-def solve(arg):
+def solve(lines):
     """Solve the problem for Part 1."""
     pass
 
-def solve2(arg):
+def solve2(lines):
     """Solve the problem for Part 2."""
     pass
 
@@ -83,16 +84,9 @@ def sample_input2():
     """Return the puzzle input and expected result for the part 2
     example problem.
     """
-    lines = []
+    lines, _ = sample_input()
     expected = "value2"
     return lines, expected
-
-def sample_cases2():
-    """Return the example inputs and expected results for the part 2.
-    (Used if there are multiple example cases.)
-    """
-    return [('arg1', 'value1'),
-            ('arg2', 'value2')]
 
 def example2():
     logger.info('= ' * 32)
@@ -102,8 +96,8 @@ def part2(lines):
 
 if __name__ == '__main__':
     example()
-    input = load_input(INPUTFILE)
-    part1(input)
+    input_lines = load_input(INPUTFILE)
+    part1(input_lines)
     example2()
-    part2(input)
+    part2(input_lines)
 
