@@ -37,10 +37,6 @@ def solve(nplayer, nmarble):
     return max(score.values())
 
 
-def solve2(nplayer, nmarble):
-    """Solve the problem for Part 2."""
-    pass
-
 # PART 1
 
 def sample_cases():
