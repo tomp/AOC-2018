@@ -46,6 +46,8 @@ def cell_power(x, y, sn):
 def best_square1(sn, size):
     """Return the coords and total power for the size x size square
     with the largest total power.
+
+    This does the least optimized, "brute force", calculation.
     """
     grid = [[cell_power(x,y,sn) for x in range(XMIN, XMAX+1)]
                                 for y in range(YMIN, YMAX+1)]
@@ -65,6 +67,9 @@ def best_square1(sn, size):
 def best_square(sn, size):
     """Return the coords and total power for the size x size square
     with the largest total power.
+
+    This function avoids recalculating many of sums.  It's still not
+    as optimized as possible, but it's fast enough for the AoC problem.
     """
     grid = [[cell_power(x,y,sn) for x in range(XMIN, XMAX+1)]
                                 for y in range(YMIN, YMAX+1)]
