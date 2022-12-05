@@ -1,103 +1,118 @@
 #!/usr/bin/env python3
 #
-#  Advent of Code 2018 - Day N
+#  Advent of Code %YEAR% - Day %DAY%
 #
+from typing import Sequence, Union, Optional, Any
+from pathlib import Path
+from collections import defaultdict
+from dataclasses import dataclass
+import math
 import re
-import json
-from datetime import datetime, timedelta
-from collections import namedtuple, defaultdict
-from itertools import chain
-import logging
 
+INPUTFILE = "input.txt"
 
-logging.basicConfig(format="%(asctime)s %(message)s", level=logging.INFO)
-logger = logging.getLogger()
+SAMPLE_CASES = [
+    (
+        """
+        """,
+        0
+    ),
+]
 
-INPUTFILE = 'input.txt'
-
+Lines = Sequence[str]
+Sections = Sequence[Lines]
 
 # Utility functions
 
-def strip(line):
-    return line.strip()
+def load_input(infile: str) -> Lines:
+    return load_text(Path(infile).read_text())
 
-def load_input(infile):
-    with open(infile, 'r') as fp:
-        return list(filter(bool, map(strip, fp)))
+def sample_case(idx: int = 0) -> tuple[Lines, int]:
+    text, expected = SAMPLE_CASES[idx]
+    lines = load_text(text)
+    return lines, expected
 
-def split_nonblank_lines(text):
-    return list(filter(bool, map(strip, text.splitlines())))
+## Use these if blank lines should be discarded.
+
+def load_text(text: str) -> Lines:
+    return filter_blank_lines(text.split("\n"))
+
+def filter_blank_lines(lines: Lines) -> Lines:
+    return [line.strip() for line in lines if line.strip()]
+
+## Use these if blank lines in input are meaningful.
+
+def load_text(text: str) -> Lines:
+    return [line.strip() for line in text.strip("\n").split("\n")]
+
+def parse_sections(lines: Lines) -> Sections:
+    result = []
+    sect = []
+    for line in lines:
+        line = line.strip()
+        if not line:
+            if sect:
+                result.append(sect)
+            sect = []
+        else:
+            sect.append(line)
+    if sect:
+        result.append(sect)
+    return result
 
 
 # Solution
 
-def solve(lines):
-    """Solve the problem for Part 1."""
-    pass
+def solve2(lines: Lines) -> int:
+    """Solve the problem."""
+    return 0
 
-def solve2(lines):
-    """Solve the problem for Part 2."""
-    pass
+def solve(lines: Lines) -> int:
+    """Solve the problem."""
+    return 0
+
 
 # PART 1
 
-def sample_input():
-    """Return the puzzle input and expected result for the part 1
-    example problem.
-    """
-    lines = []
-    expected = 'value'
-    return lines, expected
-
-def sample_cases():
-    """Return the example inputs and expected results for the part 1.
-    (Used if there are multiple example cases.)
-    """
-    return [('arg1', 'value1'),
-            ('arg2', 'value2')]
-
-def example():
-    # single example
-    lines, expected = sample_input()
-    result = solve(lines)
-    logger.info("got {} (expected {})".format(result, expected))
-    assert result == expected
-
-    # multiple examples
-    cases = sample_cases()
-    for arg, expected in cases:
-        result = solve(arg)
-        logger.info("'{}' -> {} (expected {})".format(arg, result, expected))
+def example1() -> None:
+    """Run example for problem with input arguments."""
+    print("EXAMPLE 1:")
+    for text, expected in SAMPLE_CASES:
+        lines = load_text(text)
+        result = solve(lines)
+        print(f"'{text}' -> {result} (expected {expected})")
         assert result == expected
+    print("= " * 32)
 
-    logger.info('= ' * 32)
-
-def part1(lines):
+def part1(lines: Lines) -> None:
+    print("PART 1:")
     result = solve(lines)
-    logger.info("result is {}".format(result))
-    logger.info('= ' * 32)
+    print(f"result is {result}")
+    print("= " * 32)
 
 
 # PART 2
 
-def sample_input2():
-    """Return the puzzle input and expected result for the part 2
-    example problem.
-    """
-    lines, _ = sample_input()
-    expected = "value2"
-    return lines, expected
+def example2() -> None:
+    """Run example for problem with input arguments."""
+    print("EXAMPLE 2:")
+    for text, expected in SAMPLE_CASES2:
+        lines = load_text(text)
+        result = solve2(lines)
+        print(f"'{text}' -> {result} (expected {expected})")
+        assert result == expected
+    print("= " * 32)
 
-def example2():
-    logger.info('= ' * 32)
+def part2(lines: Lines) -> None:
+    print("PART 2:")
+    result = solve2(lines)
+    print(f"result is {result}")
+    print("= " * 32)
 
-def part2(lines):
-    logger.info('= ' * 32)
 
-if __name__ == '__main__':
-    example()
+if __name__ == "__main__":
+    example1()
     input_lines = load_input(INPUTFILE)
     part1(input_lines)
-    example2()
-    part2(input_lines)
-
+    # example2()
+    # part2(input_lines)

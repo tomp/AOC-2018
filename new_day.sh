@@ -1,6 +1,7 @@
 #!/bin/bash
 # Create the directory for a new day's code.
 #
+YEAR="2018"
 
 usage () {
     echo "Usage: $0 <day>"
@@ -14,17 +15,33 @@ error () {
 }
 
 test -n "$1" || usage
-DAY=$1
+DAY="$1"
 
 dir="day${DAY}"
-prog="day${DAY}.py"
-desc="description.txt"
+prog="$dir/day${DAY}.py"
+infile="$dir/input.txt"
+desc="$dir/day${DAY}.md"
 
-mkdir -p $dir                                   || error "Unable to create $dir"
-test -f "$dir/$desc" || touch "$dir/$desc"      || error "Unable to create $desc"
-
-test -f "$dir/$prog" || sed "s/Day N/Day ${DAY}/" dayN.py > "$dir/$prog" || error "Unable to install $prog"
-chmod +x "$dir/$prog"
-
+mkdir -p "$dir" || error "Unable to create $dir"
 echo "Created $dir"
+
+test -f "$prog" || \
+    sed -E 's!%DAY%!'$DAY'!' dayN.py | \
+    sed -E 's!%YEAR%!'$YEAR'!' > "$prog" || \
+    error "Unable to install $prog"
+
+chmod +x "$prog"
+echo "Wrote $prog"
+
+./download.py -y $YEAR -d "$DAY" --outfile "$desc" || \
+    error "Unable to download puzzle description"
+
+./download.py -y $YEAR -d "$DAY" --input --outfile "$infile" || \
+    error "Unable to download input data"
+echo "$infile has $(wc -l $infile | awk '{print $1}') lines"
+
+git add "$prog" "$desc" "$infile"
+
+gvim "$prog" "$desc" "$infile"
+
 
