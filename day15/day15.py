@@ -108,6 +108,71 @@ SAMPLE_CASES = [
     ),
 ]
 
+SAMPLE_CASES2 = [
+    (
+        """
+#######
+#.G...#
+#...EG#
+#.#.#G#
+#..G#E#
+#.....#   
+#######   
+        """,
+        4988
+    ),
+    (
+        """
+#######
+#E..EG#
+#.#G.E#
+#E.##E#
+#G..#.#
+#..E#.#
+#######
+        """,
+        31284
+    ),
+    (
+        """
+#######
+#E.G#.#
+#.#G..#
+#G.#.G#
+#G..#.#
+#...E.#
+#######
+        """,
+        3478
+    ),
+    (
+        """
+#######
+#.E...#
+#.#..G#
+#.###.#
+#E#G#G#
+#...#G#
+#######
+        """,
+        6474
+    ),
+    (
+        """
+#########
+#G......#
+#.E.#...#
+#..##..G#
+#...##..#
+#...#...#
+#.G...G.#
+#.....G.#
+#########
+        """,
+        1140
+    ),
+]
+
 
 Lines = Sequence[str]
 Sections = Sequence[Lines]
@@ -159,17 +224,25 @@ class Pos():
 class Board():
     grid: dict[Pos, Cell]
 
-    def __init__(self, cells):
+    def __init__(self, cells, elf_power=DEFAULT_ATTACK_POWER):
         self.grid = cells
         self.rowmax = max([v.row for v in self.grid.keys()])
         self.rowmin = min([v.row for v in self.grid.keys()])
         self.colmax = max([v.col for v in self.grid.keys()])
         self.colmin = min([v.col for v in self.grid.keys()])
         self.hit_points = defaultdict(lambda: DEFAULT_HIT_POINTS)
-        self.power = defaultdict(lambda: DEFAULT_ATTACK_POWER)
+
+        self.power = {}
+        for elf in self.locate(ELF):
+            name = self.grid[elf]
+            self.power[name] = elf_power
+        for gob in self.locate(GOBLIN):
+            name = self.grid[gob]
+            self.power[name] = DEFAULT_ATTACK_POWER
+
 
     @classmethod
-    def from_lines(cls, lines) -> "Board":
+    def from_lines(cls, lines, **kwargs) -> "Board":
         grid = defaultdict(lambda : ROCK)
         goblins = 0
         elves = 0
@@ -182,7 +255,7 @@ class Board():
                     goblins += 1
                     val = f"{GOBLIN}{goblins}"
                 grid[Pos(r, c)] = val
-        return cls(grid)
+        return cls(grid, **kwargs)
 
     def print(self, title="", overlay=None):
         if title:
@@ -198,7 +271,7 @@ class Board():
             print("".join(row))
 
     def move(self, pos, dest):
-        print(f"Move {self.grid[pos]} from {pos} to {dest}")
+        # print(f"Move {self.grid[pos]} from {pos} to {dest}")
         assert self.grid[pos][0] in (ELF, GOBLIN)
         assert self.grid[dest] == EMPTY
         assert dest in pos.neighbors()
@@ -215,9 +288,9 @@ class Board():
         assert attacker[0] in (ELF, GOBLIN)
         assert defender[0] in (ELF, GOBLIN)
         self.hit_points[defender] -= self.power[attacker]
-        print(f"{attacker} attacks {defender} [{before} -> {self.hit_points[defender]}HP]")
+        # print(f"{attacker} attacks {defender} [{before} -> {self.hit_points[defender]}HP]")
         if self.hit_points[defender] < 1:
-            print(f"{attacker} kills {defender} ")
+            # print(f"{attacker} kills {defender} ")
             self.grid[target] = EMPTY
             return True
         return False
@@ -301,90 +374,72 @@ def propagate(board, attack: bool = True) -> int:
     progress can be made.  The board is updated in place.
     """
     rounds = 0
+    initial_elves = board.locate(ELF)
 
-    board.print(title=f"Initially:")
+    # board.print(title=f"Initially:")
     while True:
         rounds += 1
         elves = board.locate(ELF)
         goblins = board.locate(GOBLIN)
-        print(f"\nRound {rounds} :: Elves: {len(elves)}  Goblins: {len(goblins)}")
+        # print(f"\nRound {rounds} :: Elves: {len(elves)}  Goblins: {len(goblins)}")
 
         action = 0
         incomplete_loop = False
 
-        inrange = board.inrange(GOBLIN)
-        for elf in elves:
-            if not goblins:
+        units = elves + goblins
+        units.sort()
+
+        for pos in units:
+            name = board.grid[pos]
+            if name == EMPTY:
+                continue
+            other = FOE[board.grid[pos][0]]
+            if not board.locate(other):
                 incomplete_loop = True
                 break
-            foes = board.targets(elf)
+            foes = board.targets(pos)
             if not foes:
                 # Move
-                dists = board.distances(elf)
+                inrange = board.inrange(other)
+                dists = board.distances(pos)
                 reachable = {pos: dist for pos, dist in dists.items() if pos in inrange}
                 if reachable:
                     mindist = min(reachable.values())
                     nearest = [pos for pos, dist in reachable.items() if dist == mindist]
                     nearest.sort()
                     goal = nearest[0]
-                    step = first_step(elf, goal, dists)
-                    board.move(elf, step)
-                    elf = step
+                    step = first_step(pos, goal, dists)
+                    board.move(pos, step)
+                    pos = step
                     action += 1
-                foes = board.targets(elf)
-            if foes and attack:
-                # Attack!
-                _, foe = foes[0]
-                if board.attack(elf, foe):
-                    goblins = board.locate(GOBLIN)
-                    inrange = board.inrange(GOBLIN)
-                action += 1
-
-        inrange = board.inrange(ELF)
-        for gob in goblins:
-            if not elves:
-                incomplete_loop = True
-                break
-            foes = board.targets(gob)
-            if not foes:
-                # Move
-                dists = board.distances(gob)
-                reachable = {pos: dist for pos, dist in dists.items() if pos in inrange}
-                if reachable:
-                    mindist = min(reachable.values())
-                    nearest = [pos for pos, dist in reachable.items() if dist == mindist]
-                    nearest.sort()
-                    goal = nearest[0]
-                    step = first_step(gob, goal, dists)
-                    board.move(gob, step)
-                    gob = step
+                foes = board.targets(pos)
+            if foes:
+                if attack:
+                    # Attack!
+                    _, foe = foes[0]
+                    board.attack(pos, foe)
                     action += 1
-                foes = board.targets(gob)
-            if foes and attack:
-                # Attack
-                _, foe = foes[0]
-                if board.attack(gob, foe):
-                    elves = board.locate(ELF)
-                    inrange = board.inrange(ELF)
-                action += 1
 
-        board.print(title=f"After {rounds} rounds:")
+        # board.print(title=f"After {rounds} rounds:")
         if incomplete_loop or not action:
             rounds -= 1
             break
 
     elves = board.locate(ELF)
     goblins = board.locate(GOBLIN)
-    for pos in elves + goblins:
-        character = board.grid[pos]
-        print(f"{character} has {board.hit_points[character]} HP")
+    casualties  = len(initial_elves) - len(elves)
+    # for pos in elves + goblins:
+    #     character = board.grid[pos]
+    #     print(f"{character} has {board.hit_points[character]} HP")
     if elves:
         total_hit_points = sum([board.hit_points[board.grid[elf]] for elf in elves])
+        victory = True
     elif goblins:
         total_hit_points = sum([board.hit_points[board.grid[gob]] for gob in goblins])
+        victory = False
     score = rounds * total_hit_points
     print(f"Final score: {score} <-- {rounds} rounds, {total_hit_points} HP remaining") 
-    return score
+    return score, victory, casualties
 
 
 def check2(lines):
@@ -437,12 +492,26 @@ def check(lines):
 
 def solve2(lines: Lines) -> int:
     """Solve the problem."""
-    return 0
+    victory = False
+    casualties = -1
+    power = DEFAULT_ATTACK_POWER + 1
+    while not victory or casualties != 0:
+        board = Board.from_lines(lines, elf_power=power)
+        score, victory, casualties = propagate(board)
+        if victory:
+            if not casualties:
+                print(f"ELVES WIN!  power={power}, score={score}")
+            else:
+                print(f"elves win.  power={power}, score={score}, casualties={casualties}")
+        else:
+            print(f"goblins win.  power={power}, score={score}")
+        power += 1
+    return score
 
 def solve(lines: Lines) -> int:
     """Solve the problem."""
     board = Board.from_lines(lines)
-    score = propagate(board)
+    score, _, _ = propagate(board)
     return score
 
 
@@ -471,6 +540,7 @@ def part1(lines: Lines) -> None:
     print("PART 1:")
     result = solve(lines)
     print(f"result is {result}")
+    assert result == 198531
     print("= " * 32)
 
 
@@ -490,12 +560,13 @@ def part2(lines: Lines) -> None:
     print("PART 2:")
     result = solve2(lines)
     print(f"result is {result}")
+    assert result == 90420
     print("= " * 32)
 
 
 if __name__ == "__main__":
     example1()
     input_lines = load_input(INPUTFILE)
-    # part1(input_lines)
-    # example2()
-    # part2(input_lines)
+    part1(input_lines)
+    example2()
+    part2(input_lines)
