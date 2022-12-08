@@ -57,14 +57,37 @@ The Elves think their skill will improve after making a few recipes (your puzzle
 
 
 
-Your puzzle input is `556061`.
+Your puzzle answer was `2107929416`.
+
+--- Part Two ---
+----------------
+
+As it turns out, you got the Elves' plan backwards. They actually want to know how many recipes appear on the scoreboard to the left of the first recipes whose scores are the digits from your puzzle input.
 
 
-Answer:  
+* `51589` first appears after `9` recipes.
+* `01245` first appears after `5` recipes.
+* `92510` first appears after `18` recipes.
+* `59414` first appears after `2018` recipes.
+
+
+*How many recipes appear on the scoreboard to the left of the score sequence in your puzzle input?*
+
+
+
+Your puzzle answer was `20307394`.
+
+Both parts of this puzzle are complete! They provide two gold stars: \*\*
+
+
+At this point, you should [return to your Advent calendar](/2018) and try another puzzle.
+
+
+Your puzzle input was `556061`.
 
 
 You can also [Shareon
- [Twitter](https://twitter.com/intent/tweet?text=%22Chocolate+Charts%22+%2D+Day+14+%2D+Advent+of+Code+2018&url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F14&related=ericwastl&hashtags=AdventOfCode)
+ [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Chocolate+Charts%22+%2D+Day+14+%2D+Advent+of+Code+2018&url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F14&related=ericwastl&hashtags=AdventOfCode)
 [Mastodon](javascript:void(0);)] this puzzle.
 
 

@@ -103,14 +103,31 @@ Ignoring the opcode numbers, *how many samples in your puzzle input behave like 
 
 
 
-To begin, [get your puzzle input](16/input).
+Your puzzle answer was `651`.
+
+--- Part Two ---
+----------------
+
+Using the samples you collected, work out the number of each opcode and execute the test program (the second section of your puzzle input).
 
 
-Answer:  
+*What value is contained in register `0` after executing the test program?*
+
+
+
+Your puzzle answer was `706`.
+
+Both parts of this puzzle are complete! They provide two gold stars: \*\*
+
+
+At this point, you should [return to your Advent calendar](/2018) and try another puzzle.
+
+
+If you still want to see it, you can [get your puzzle input](16/input).
 
 
 You can also [Shareon
- [Twitter](https://twitter.com/intent/tweet?text=%22Chronal+Classification%22+%2D+Day+16+%2D+Advent+of+Code+2018&url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F16&related=ericwastl&hashtags=AdventOfCode)
+ [Twitter](https://twitter.com/intent/tweet?text=I%27ve+completed+%22Chronal+Classification%22+%2D+Day+16+%2D+Advent+of+Code+2018&url=https%3A%2F%2Fadventofcode%2Ecom%2F2018%2Fday%2F16&related=ericwastl&hashtags=AdventOfCode)
 [Mastodon](javascript:void(0);)] this puzzle.
 
 
